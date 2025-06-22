@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/setup.sh:*)",
+      "Bash(python3:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(PYTHONPATH=src python -m rule_manager.main --help)",
+      "Bash(PYTHONPATH=src python scripts/test_working_mcp.py)",
+      "Bash(PYTHONPATH=src python scripts/debug_mcp.py)"
     ],
     "deny": []
   }
