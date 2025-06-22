@@ -14,7 +14,9 @@ class RuleStore(ABC):
         pass
 
     @abstractmethod
-    async def get_rule(self, rule_name: str, scope: Optional[RuleScope] = None) -> Optional[Rule]:
+    async def get_rule(
+        self, rule_name: str, scope: Optional[RuleScope] = None
+    ) -> Optional[Rule]:
         pass
 
     @abstractmethod

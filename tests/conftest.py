@@ -39,7 +39,7 @@ def sample_rules():
             priority=90,
             action=RuleAction.ALLOW,
             conditions={"role": "user_role == 'admin'"},
-            description="Allow admin users"
+            description="Allow admin users",
         ),
         Rule(
             name="rate_limit",
@@ -47,7 +47,7 @@ def sample_rules():
             priority=80,
             action=RuleAction.DENY,
             conditions={"rate": "request_count > 100"},
-            description="Rate limiting"
+            description="Rate limiting",
         ),
         Rule(
             name="default_allow",
@@ -55,8 +55,8 @@ def sample_rules():
             priority=10,
             action=RuleAction.ALLOW,
             conditions={},
-            description="Default allow rule"
-        )
+            description="Default allow rule",
+        ),
     ]
 
 
@@ -71,8 +71,8 @@ def sample_context():
         custom_attributes={
             "user_role": "admin",
             "request_count": 50,
-            "environment": "test"
-        }
+            "environment": "test",
+        },
     )
 
 

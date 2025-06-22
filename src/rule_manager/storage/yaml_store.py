@@ -28,10 +28,10 @@ class YAMLRuleStore(RuleStore):
     async def _load_yaml_file(self, file_path: Path) -> Dict[str, Any]:
         if not file_path.exists():
             return {}
-        
+
         try:
             async with self._get_lock(str(file_path)):
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     portalocker.lock(f, portalocker.LOCK_SH)
                     try:
                         content = yaml.safe_load(f) or {}
@@ -46,10 +46,16 @@ class YAMLRuleStore(RuleStore):
     async def _save_yaml_file(self, file_path: Path, data: Dict[str, Any]) -> None:
         try:
             async with self._get_lock(str(file_path)):
-                with open(file_path, 'w', encoding='utf-8') as f:
+                with open(file_path, "w", encoding="utf-8") as f:
                     portalocker.lock(f, portalocker.LOCK_EX)
                     try:
-                        yaml.safe_dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+                        yaml.safe_dump(
+                            data,
+                            f,
+                            default_flow_style=False,
+                            allow_unicode=True,
+                            sort_keys=False,
+                        )
                     finally:
                         portalocker.unlock(f)
         except Exception as e:
@@ -60,10 +66,10 @@ class YAMLRuleStore(RuleStore):
     async def load_rules(self, scope: RuleScope) -> RuleSet:
         file_path = self._get_file_path(scope)
         data = await self._load_yaml_file(file_path)
-        
+
         if not data:
             return RuleSet(scope=scope, rules=[])
-        
+
         try:
             return RuleSet(**data)
         except Exception as e:
@@ -71,39 +77,43 @@ class YAMLRuleStore(RuleStore):
 
     async def save_rules(self, ruleset: RuleSet) -> None:
         file_path = self._get_file_path(ruleset.scope)
-        
+
         # Update timestamps
         now = datetime.utcnow().isoformat()
         for rule in ruleset.rules:
             if not rule.created_at:
                 rule.created_at = now
             rule.updated_at = now
-        
+
         ruleset_dict = ruleset.model_dump()
         await self._save_yaml_file(file_path, ruleset_dict)
 
-    async def get_rule(self, rule_name: str, scope: Optional[RuleScope] = None) -> Optional[Rule]:
+    async def get_rule(
+        self, rule_name: str, scope: Optional[RuleScope] = None
+    ) -> Optional[Rule]:
         if scope:
             scopes = [scope]
         else:
             scopes = list(RuleScope)
-        
+
         for scope_to_check in scopes:
             ruleset = await self.load_rules(scope_to_check)
             for rule in ruleset.rules:
                 if rule.name == rule_name:
                     return rule
-        
+
         return None
 
     async def add_rule(self, rule: Rule) -> None:
         ruleset = await self.load_rules(rule.scope)
-        
+
         # Check if rule already exists
         existing_rule = next((r for r in ruleset.rules if r.name == rule.name), None)
         if existing_rule:
-            raise UnexpectedError(f"Rule {rule.name} already exists in scope {rule.scope}")
-        
+            raise UnexpectedError(
+                f"Rule {rule.name} already exists in scope {rule.scope}"
+            )
+
         rule.created_at = datetime.utcnow().isoformat()
         rule.updated_at = rule.created_at
         ruleset.rules.append(rule)
@@ -111,7 +121,7 @@ class YAMLRuleStore(RuleStore):
 
     async def update_rule(self, rule: Rule) -> None:
         ruleset = await self.load_rules(rule.scope)
-        
+
         for i, existing_rule in enumerate(ruleset.rules):
             if existing_rule.name == rule.name:
                 rule.created_at = existing_rule.created_at
@@ -119,18 +129,18 @@ class YAMLRuleStore(RuleStore):
                 ruleset.rules[i] = rule
                 await self.save_rules(ruleset)
                 return
-        
+
         raise RuleNotFoundError(rule.name)
 
     async def delete_rule(self, rule_name: str, scope: RuleScope) -> bool:
         ruleset = await self.load_rules(scope)
-        
+
         for i, rule in enumerate(ruleset.rules):
             if rule.name == rule_name:
                 ruleset.rules.pop(i)
                 await self.save_rules(ruleset)
                 return True
-        
+
         return False
 
     async def list_rules(self, scope: Optional[RuleScope] = None) -> List[Rule]:
@@ -138,18 +148,18 @@ class YAMLRuleStore(RuleStore):
             scopes = [scope]
         else:
             scopes = list(RuleScope)
-        
+
         all_rules = []
         for scope_to_check in scopes:
             ruleset = await self.load_rules(scope_to_check)
             all_rules.extend(ruleset.rules)
-        
+
         return all_rules
 
     async def backup_rules(self, backup_path: str) -> None:
         backup_dir = Path(backup_path)
         backup_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for scope in RuleScope:
             source_path = self._get_file_path(scope)
             if source_path.exists():
@@ -159,7 +169,7 @@ class YAMLRuleStore(RuleStore):
 
     async def restore_rules(self, backup_path: str) -> None:
         backup_dir = Path(backup_path)
-        
+
         for scope in RuleScope:
             backup_file = backup_dir / f"{scope.value}.yaml"
             if backup_file.exists():
@@ -172,12 +182,12 @@ class YAMLRuleStore(RuleStore):
             # Check if directory is accessible
             if not self.rules_dir.exists():
                 return False
-            
+
             # Test write access by creating a temporary file
             test_file = self.rules_dir / ".health_check"
             test_file.write_text("health_check")
             test_file.unlink()
-            
+
             return True
         except Exception:
             return False
