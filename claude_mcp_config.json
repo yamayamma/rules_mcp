@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "rules_mcp": {
+      "command": "/workspace/rules_mcp/venv/bin/python",
+      "args": ["-m", "rule_manager.main"],
+      "cwd": "/workspace/rules_mcp",
+      "env": {
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}
