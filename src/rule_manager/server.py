@@ -382,20 +382,3 @@ class RuleManagerServer:
                     "timestamp": datetime.utcnow().isoformat(),
                 }
 
-    async def run(self):
-        """Run the MCP server"""
-        if self.settings.transport == "stdio":
-            await self.mcp.run(transport="stdio")
-        elif self.settings.transport == "streamable-http":
-            await self.mcp.run(
-                transport="streamable-http",
-                host=self.settings.host,
-                port=self.settings.port,
-                async_mode=self.settings.async_mode,
-            )
-        elif self.settings.transport == "sse":
-            await self.mcp.run(
-                transport="sse", host=self.settings.host, port=self.settings.port
-            )
-        else:
-            raise ValueError(f"Unsupported transport: {self.settings.transport}")

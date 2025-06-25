@@ -133,40 +133,47 @@ def load_settings_from_args(args: argparse.Namespace) -> ServerSettings:
     return ServerSettings(**settings_kwargs)
 
 
-async def main_async():
-    """Async main function"""
+
+def main():
+    """Main entry point"""
     parser = create_parser()
     args = parser.parse_args()
-
+    
     try:
         # Load settings
         settings = load_settings_from_args(args)
-
-        # Create and run server
+        
+        # Create server
         server = RuleManagerServer(settings)
-
+        
         print(f"Starting Rule Manager MCP Server...")
         print(f"Transport: {settings.transport}")
         if settings.transport != "stdio":
             print(f"Address: {settings.host}:{settings.port}")
         print(f"Rules Directory: {settings.rules_dir}")
         print(f"Storage Backend: {settings.storage_backend}")
-
-        await server.run()
-
+        
+        # Let FastMCP handle the event loop
+        if settings.transport == "stdio":
+            server.mcp.run(transport="stdio")
+        elif settings.transport == "streamable-http":
+            server.mcp.run(
+                transport="streamable-http",
+                host=settings.host,
+                port=settings.port,
+                async_mode=settings.async_mode
+            )
+        elif settings.transport == "sse":
+            server.mcp.run(
+                transport="sse",
+                host=settings.host,
+                port=settings.port
+            )
+        else:
+            raise ValueError(f"Unsupported transport: {settings.transport}")
+            
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
-
-
-def main():
-    """Main entry point"""
-    try:
-        asyncio.run(main_async())
-    except KeyboardInterrupt:
-        pass
     except Exception as e:
         print(f"Fatal error: {e}", file=sys.stderr)
         sys.exit(1)
