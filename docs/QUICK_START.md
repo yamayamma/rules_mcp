@@ -10,7 +10,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # 依存関係のインストール
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 2. サーバーの起動
@@ -39,14 +39,15 @@ PYTHONPATH=src python -m rule_manager.main --log-level DEBUG
 7. **validate_rule_dsl** - DSL式の検証
 8. **health_check** - ヘルスチェック
 
-### 4. 動作テスト
+### 4. Claude CodeへのMCP登録
 
 ```bash
-# ルールエンジンの動作テスト
-PYTHONPATH=src python scripts/simple_test.py
+# MCPサーバーをClaude Codeに追加
+claude mcp add rules_mcp -e PYTHONPATH=src -- /workspace/rules_mcp/venv/bin/python -m rule_manager.main
 
-# MCPサーバーの動作確認
-PYTHONPATH=src python scripts/test_working_mcp.py
+# 登録確認
+claude mcp list
+# 出力: rules_mcp: /workspace/rules_mcp/venv/bin/python -m rule_manager.main
 ```
 
 ### 5. ルール評価の例
@@ -63,11 +64,12 @@ context = {
     }
 }
 
-# 評価結果
+# 評価結果（実際の出力）
 {
     "final_action": "allow",
-    "matched_rules_count": 3,
-    "total_execution_time_ms": 12.5,
+    "matched_rules_count": 1,
+    "applicable_rules_count": 11,
+    "total_execution_time_ms": 8.45,
     "results": [...]
 }
 ```

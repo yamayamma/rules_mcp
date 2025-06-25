@@ -6,17 +6,23 @@ LLM階層型ルール管理MCPサーバーのドキュメント一覧です。
 
 ### 🚀 セットアップ・導入
 
-- **[SETUP.md](SETUP.md)** - 詳細なセットアップ手順
-  - 自動セットアップスクリプト
-  - 手動セットアップ手順
-  - Claude Code との連携設定
+- **[MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md)** - 完全セットアップガイド
+  - Python環境の準備
+  - Claude CodeへのMCP登録
+  - 動作テスト・確認方法
   - トラブルシューティング
 
 - **[QUICK_START.md](QUICK_START.md)** - クイックスタートガイド
   - 基本的な起動手順
+  - Claude CodeのMCP登録
   - 利用可能なMCPツール
-  - 動作テスト方法
   - 簡単な使用例
+
+- **[WORKING_STATUS.md](WORKING_STATUS.md)** - 現在の動作状況
+  - 完了した実装と設定
+  - 登録済みルール (11個) の詳細
+  - パフォーマンス実績
+  - 利用可能なMCPツール状況
 
 ### 🔌 統合・活用
 
@@ -35,9 +41,10 @@ LLM階層型ルール管理MCPサーバーのドキュメント一覧です。
 ## 🔍 目的別ガイド
 
 ### 初めて使用する場合
-1. **[SETUP.md](SETUP.md)** でセットアップ
+1. **[MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md)** でセットアップ
 2. **[QUICK_START.md](QUICK_START.md)** で基本動作確認
-3. **[MCP_INTEGRATION.md](MCP_INTEGRATION.md)** でClaude Code連携
+3. **[WORKING_STATUS.md](WORKING_STATUS.md)** で現在の状況確認
+4. **[MCP_INTEGRATION.md](MCP_INTEGRATION.md)** でClaude Code連携
 
 ### 詳細な機能を知りたい場合
 1. **[USAGE.md](USAGE.md)** で全機能を確認
@@ -45,9 +52,10 @@ LLM階層型ルール管理MCPサーバーのドキュメント一覧です。
 3. **[../CLAUDE.md](../CLAUDE.md)** で開発者情報確認
 
 ### 問題解決が必要な場合
-1. **[SETUP.md](SETUP.md)** のトラブルシューティング
-2. **[QUICK_START.md](QUICK_START.md)** の動作テスト
-3. **[MCP_INTEGRATION.md](MCP_INTEGRATION.md)** のデバッグ情報
+1. **[WORKING_STATUS.md](WORKING_STATUS.md)** で動作状況確認
+2. **[MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md)** のトラブルシューティング
+3. **[QUICK_START.md](QUICK_START.md)** の動作テスト
+4. **[MCP_INTEGRATION.md](MCP_INTEGRATION.md)** のデバッグ情報
 
 ## 📖 その他のリソース
 
@@ -67,7 +75,7 @@ LLM階層型ルール管理MCPサーバーのドキュメント一覧です。
 ### よくある質問
 
 **Q: セットアップがうまくいかない**
-→ [SETUP.md](SETUP.md) のトラブルシューティングセクションを確認
+→ [MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md) のトラブルシューティングセクションを確認
 
 **Q: Claude Code で接続できない**
 → [MCP_INTEGRATION.md](MCP_INTEGRATION.md) の統合手順を確認

@@ -1,8 +1,31 @@
-# LLM階層型ルール管理MCPサーバー設計書（最終版）
+# LLM階層型ルール管理MCPサーバー
+
+## 🎉 実装完了・動作確認済み
+
+**✅ MCPサーバーの実装とClaude Code連携が完了しました！**
+
+LLM アプリケーション向けに **グローバル／プロジェクト／個別** の階層ルールを一元管理し、動的に適用・検証可能な MCP サーバーを Python で構築しました。運用・ガバナンス・監査を包括し、**STDIO** をデフォルトに据えつつ **Streamable HTTP** への移行が容易な構成を提供します。
+
+### 🚀 クイックスタート
+
+```bash
+# 1. 環境セットアップ
+python3 -m venv venv && source venv/bin/activate
+pip install -e .
+
+# 2. Claude CodeへのMCP登録
+claude mcp add rules_mcp -e PYTHONPATH=src -- /workspace/rules_mcp/venv/bin/python -m rule_manager.main
+
+# 3. 動作確認
+claude mcp list
+# 出力: rules_mcp: /workspace/rules_mcp/venv/bin/python -m rule_manager.main
+```
+
+現在 **11個のサンプルルール** が登録済みで、**8つのMCPツール** が利用可能です。
+
+詳細は **[docs/WORKING_STATUS.md](docs/WORKING_STATUS.md)** をご確認ください。
 
 ## 1. 概要
-
-LLM アプリケーション向けに **グローバル／プロジェクト／個別** の階層ルールを一元管理し、動的に適用・検証可能な MCP サーバーを Python で構築する。運用・ガバナンス・監査を包括し、**STDIO** をデフォルトに据えつつ **Streamable HTTP** への移行が容易な構成を提供する。
 
 ---
 

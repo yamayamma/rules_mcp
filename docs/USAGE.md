@@ -9,11 +9,12 @@
 ### 1. 依存関係のインストール
 
 ```bash
-# Poetryを使用する場合
-poetry install
+# 仮想環境の作成
+python3 -m venv venv
+source venv/bin/activate
 
-# pipを使用する場合
-pip install -r requirements.txt
+# 開発モードでインストール
+pip install -e .
 ```
 
 ### 2. 環境設定
@@ -38,40 +39,40 @@ ls -la config/rules/
 ### STDIO トランスポート（デフォルト）
 
 ```bash
-# Poetry使用
-poetry run rule-manager
-
 # 直接実行
-python -m rule_manager.main
+PYTHONPATH=src python -m rule_manager.main
+
+# 仮想環境から実行
+venv/bin/python -m rule_manager.main
 ```
 
 ### HTTP トランスポート
 
 ```bash
 # HTTPサーバーとして起動
-poetry run rule-manager --transport streamable-http --port 8080
+PYTHONPATH=src python -m rule_manager.main --transport streamable-http --port 8080
 
 # ホストとポートを指定
-poetry run rule-manager --transport streamable-http --host 0.0.0.0 --port 8080
+PYTHONPATH=src python -m rule_manager.main --transport streamable-http --host 0.0.0.0 --port 8080
 ```
 
 ### その他のオプション
 
 ```bash
 # 詳細ログ
-poetry run rule-manager --log-level DEBUG
+PYTHONPATH=src python -m rule_manager.main --log-level DEBUG
 
 # カスタムルールディレクトリ
-poetry run rule-manager --rules-dir /path/to/custom/rules
+PYTHONPATH=src python -m rule_manager.main --rules-dir /path/to/custom/rules
 
 # 環境ファイルを指定
-poetry run rule-manager --env-file .env.production
+PYTHONPATH=src python -m rule_manager.main --env-file .env.production
 
 # 非同期モード（高並列）
-poetry run rule-manager --async-mode
+PYTHONPATH=src python -m rule_manager.main --async-mode
 
 # ヘルプ表示
-poetry run rule-manager --help
+PYTHONPATH=src python -m rule_manager.main --help
 ```
 
 ## MCP ツール一覧
@@ -113,7 +114,7 @@ poetry run rule-manager --help
   "final_action": "allow",
   "total_execution_time_ms": 25.7,
   "evaluated_at": "2025-01-20T12:00:00Z",
-  "applicable_rules_count": 5,
+  "applicable_rules_count": 11,
   "matched_rules_count": 1
 }
 ```
@@ -294,7 +295,7 @@ rules:
 
 ```bash
 # ログレベルを上げて詳細情報を確認
-poetry run rule-manager --log-level DEBUG
+PYTHONPATH=src python -m rule_manager.main --log-level DEBUG
 
 # 特定のディレクトリでログファイルを確認
 tail -f logs/audit.db
@@ -304,25 +305,28 @@ tail -f logs/audit.db
 
 ```bash
 # 高並列処理
-poetry run rule-manager --async-mode --max-concurrent-evaluations 200
+PYTHONPATH=src python -m rule_manager.main --async-mode --max-concurrent-evaluations 200
 
 # キャッシュサイズ調整
-FASTMCP_RULE_CACHE_SIZE_MB=128 poetry run rule-manager
+FASTMCP_RULE_CACHE_SIZE_MB=128 PYTHONPATH=src python -m rule_manager.main
 ```
 
 ## 開発・テスト
 
 ### 単体テスト実行
 ```bash
-poetry run pytest tests/unit/
+source venv/bin/activate
+pytest tests/unit/
 ```
 
 ### 統合テスト実行
 ```bash
-poetry run pytest tests/integration/
+source venv/bin/activate
+pytest tests/integration/
 ```
 
 ### 負荷テスト実行
 ```bash
-poetry run locust -f tests/load/
+source venv/bin/activate
+locust -f tests/load/
 ```

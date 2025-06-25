@@ -24,7 +24,11 @@
       "Bash(PYTHONPATH=src venv/bin/python -c \"\nimport asyncio\nfrom rule_manager.models.base import RuleContext\nfrom rule_manager.server import RuleManagerServer\nfrom rule_manager.models.settings import ServerSettings\n\nasync def test_server():\n    settings = ServerSettings()\n    server = RuleManagerServer(settings)\n    \n    # Test health check\n    print('Testing health check...')\n    result = await server._register_tools.__wrapped__(server)\n    print('MCP server initialized successfully')\n\nasyncio.run(test_server())\n\")",
       "Bash(PYTHONPATH=src venv/bin/python -c \"\nimport asyncio\nfrom rule_manager.models.base import RuleContext, RuleScope, RuleAction\nfrom rule_manager.storage.yaml_store import YAMLRuleStore\nfrom rule_manager.core.engine import RuleEngine\n\nasync def test_rule_engine():\n    # Initialize storage and engine\n    store = YAMLRuleStore('config/rules')\n    engine = RuleEngine(store)\n    \n    # Test health check\n    healthy = await store.health_check()\n    print(f'Storage health check: {healthy}')\n    \n    # Test rule evaluation with sample context\n    context = RuleContext(\n        user_id='test_user',\n        model_name='gpt-4',\n        prompt_length=1500,\n        custom_attributes={\n            'user_role': 'admin',\n            'request_count': 50\n        }\n    )\n    \n    print(f'Testing rule evaluation with context: {context.user_id}')\n    \n    # Load rules and evaluate\n    try:\n        result = await engine.evaluate_rules(context)\n        print(f'Evaluation result: {result.final_action}')\n        print(f'Matched rules: {result.matched_rules_count}/{result.applicable_rules_count}')\n        for rule_result in result.results:\n            print(f'  - {rule_result.rule_name}: {rule_result.action} (matched: {rule_result.matched})')\n    except Exception as e:\n        print(f'Evaluation error: {e}')\n\nasyncio.run(test_rule_engine())\n\")",
       "Bash(PYTHONPATH=src venv/bin/python:*)",
-      "Bash(PYTHONPATH=src timeout:*)"
+      "Bash(PYTHONPATH=src timeout:*)",
+      "Bash(PYTHONPATH=src timeout 5s ./venv/bin/python -m rule_manager.main 2 >& 1)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   },
