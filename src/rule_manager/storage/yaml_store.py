@@ -85,7 +85,7 @@ class YAMLRuleStore(RuleStore):
                 rule.created_at = now
             rule.updated_at = now
 
-        ruleset_dict = ruleset.model_dump(mode='json')
+        ruleset_dict = ruleset.model_dump(mode="json")
         await self._save_yaml_file(file_path, ruleset_dict)
 
     async def get_rule(
