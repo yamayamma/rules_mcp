@@ -1,6 +1,7 @@
 import logging
 import sys
-from typing import Any, Dict, Optional
+from typing import Any
+
 import structlog
 from structlog.stdlib import LoggerFactory
 
@@ -66,7 +67,7 @@ class AuditLogger:
     Logs to both structured logs and append-only database.
     """
 
-    def __init__(self, audit_log_path: Optional[str] = None):
+    def __init__(self, audit_log_path: str | None = None):
         self.logger = get_logger("audit")
         self.audit_log_path = audit_log_path
 
@@ -75,9 +76,9 @@ class AuditLogger:
         operation: str,
         rule_name: str,
         scope: str,
-        user_id: Optional[str] = None,
+        user_id: str | None = None,
         success: bool = True,
-        error_message: Optional[str] = None,
+        error_message: str | None = None,
         **extra_context: Any,
     ) -> None:
         """
@@ -114,9 +115,9 @@ class AuditLogger:
         user_id: str,
         success: bool,
         method: str = "jwt",
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        error_message: Optional[str] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        error_message: str | None = None,
     ) -> None:
         """
         Log an authentication attempt.
@@ -151,9 +152,9 @@ class AuditLogger:
         resource: str,
         action: str,
         success: bool,
-        required_permissions: Optional[list] = None,
-        user_permissions: Optional[list] = None,
-        error_message: Optional[str] = None,
+        required_permissions: list | None = None,
+        user_permissions: list | None = None,
+        error_message: str | None = None,
     ) -> None:
         """
         Log an authorization check.

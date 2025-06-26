@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""
-Minimal MCP Server Test
+"""Minimal MCP Server Test
 
 Test basic FastMCP functionality to understand the API.
 """
+
+# ruff: noqa: E402
 
 import asyncio
 import sys
@@ -43,7 +44,7 @@ async def test_minimal_mcp():
         tools = list(mcp._tools.keys())
         print(f"   📋 Registered tools: {tools}")
     elif hasattr(mcp, "tools"):
-        print(f"   📋 Tools attribute found")
+        print("   📋 Tools attribute found")
     else:
         print("   ⚠️ No tools attribute found")
 
@@ -100,7 +101,7 @@ async def main():
     print("🔬 FastMCP API Exploration")
     print("=" * 30)
 
-    mcp = await test_minimal_mcp()
+    _ = await test_minimal_mcp()
     await test_fastmcp_run()
 
     print("\n" + "=" * 30)

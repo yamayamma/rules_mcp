@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""
-Test MCP Server in STDIO mode
+"""Test MCP Server in STDIO mode
 
 This script tests the MCP server by starting it and sending MCP messages
 through stdin/stdout.
 """
 
+# ruff: noqa: E402
+
 import asyncio
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -73,7 +73,7 @@ async def test_mcp_stdio():
             else:
                 print("   ❌ No response from server")
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             print("   ❌ Initialization timeout")
         except json.JSONDecodeError as e:
             print(f"   ❌ Invalid JSON response: {e}")
@@ -108,7 +108,7 @@ async def test_mcp_stdio():
             else:
                 print("   ❌ No response to tools/list")
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             print("   ❌ Tools/list timeout")
         except json.JSONDecodeError as e:
             print(f"   ❌ Invalid JSON response: {e}")
@@ -148,7 +148,7 @@ async def test_mcp_stdio():
             else:
                 print("   ❌ No response to health_check")
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             print("   ❌ Health check timeout")
         except (json.JSONDecodeError, KeyError) as e:
             print(f"   ❌ Error parsing health response: {e}")
@@ -160,7 +160,7 @@ async def test_mcp_stdio():
         try:
             await asyncio.wait_for(server_process.wait(), timeout=3.0)
             print("   ✅ Server terminated gracefully")
-        except asyncio.TimeoutError:
+        except TimeoutError:
             server_process.kill()
             await server_process.wait()
             print("   ⚠️ Server force-killed")

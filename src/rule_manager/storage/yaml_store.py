@@ -1,21 +1,21 @@
-import os
 import asyncio
-import yaml
-from pathlib import Path
-from typing import List, Optional, Dict, Any
 from datetime import datetime
-import portalocker
+from pathlib import Path
+from typing import Any
 
+import portalocker
+import yaml
+
+from ..models.base import Rule, RuleScope, RuleSet
+from ..models.errors import RuleNotFoundError, StorageLockError, UnexpectedError
 from .base import RuleStore
-from ..models.base import Rule, RuleSet, RuleScope
-from ..models.errors import StorageLockError, RuleNotFoundError, UnexpectedError
 
 
 class YAMLRuleStore(RuleStore):
     def __init__(self, rules_dir: str):
         self.rules_dir = Path(rules_dir)
         self.rules_dir.mkdir(parents=True, exist_ok=True)
-        self._file_locks: Dict[str, asyncio.Lock] = {}
+        self._file_locks: dict[str, asyncio.Lock] = {}
 
     def _get_file_path(self, scope: RuleScope) -> Path:
         return self.rules_dir / f"{scope.value}.yaml"
@@ -25,13 +25,13 @@ class YAMLRuleStore(RuleStore):
             self._file_locks[file_path] = asyncio.Lock()
         return self._file_locks[file_path]
 
-    async def _load_yaml_file(self, file_path: Path) -> Dict[str, Any]:
+    async def _load_yaml_file(self, file_path: Path) -> dict[str, Any]:
         if not file_path.exists():
             return {}
 
         try:
             async with self._get_lock(str(file_path)):
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     portalocker.lock(f, portalocker.LOCK_SH)
                     try:
                         content = yaml.safe_load(f) or {}
@@ -40,10 +40,14 @@ class YAMLRuleStore(RuleStore):
                         portalocker.unlock(f)
         except Exception as e:
             if "lock" in str(e).lower():
-                raise StorageLockError(f"Failed to acquire read lock for {file_path}")
-            raise UnexpectedError(f"Failed to load YAML file {file_path}: {e}")
+                raise StorageLockError(
+                    f"Failed to acquire read lock for {file_path}"
+                ) from e
+            raise UnexpectedError(
+                f"Failed to load YAML file {file_path}: {e}"
+            ) from e
 
-    async def _save_yaml_file(self, file_path: Path, data: Dict[str, Any]) -> None:
+    async def _save_yaml_file(self, file_path: Path, data: dict[str, Any]) -> None:
         try:
             async with self._get_lock(str(file_path)):
                 with open(file_path, "w", encoding="utf-8") as f:
@@ -60,8 +64,12 @@ class YAMLRuleStore(RuleStore):
                         portalocker.unlock(f)
         except Exception as e:
             if "lock" in str(e).lower():
-                raise StorageLockError(f"Failed to acquire write lock for {file_path}")
-            raise UnexpectedError(f"Failed to save YAML file {file_path}: {e}")
+                raise StorageLockError(
+                    f"Failed to acquire write lock for {file_path}"
+                ) from e
+            raise UnexpectedError(
+                f"Failed to save YAML file {file_path}: {e}"
+            ) from e
 
     async def load_rules(self, scope: RuleScope) -> RuleSet:
         file_path = self._get_file_path(scope)
@@ -73,7 +81,9 @@ class YAMLRuleStore(RuleStore):
         try:
             return RuleSet(**data)
         except Exception as e:
-            raise UnexpectedError(f"Failed to parse ruleset from {file_path}: {e}")
+            raise UnexpectedError(
+                f"Failed to parse ruleset from {file_path}: {e}"
+            ) from e
 
     async def save_rules(self, ruleset: RuleSet) -> None:
         file_path = self._get_file_path(ruleset.scope)
@@ -89,8 +99,8 @@ class YAMLRuleStore(RuleStore):
         await self._save_yaml_file(file_path, ruleset_dict)
 
     async def get_rule(
-        self, rule_name: str, scope: Optional[RuleScope] = None
-    ) -> Optional[Rule]:
+        self, rule_name: str, scope: RuleScope | None = None
+    ) -> Rule | None:
         if scope:
             scopes = [scope]
         else:
@@ -143,7 +153,7 @@ class YAMLRuleStore(RuleStore):
 
         return False
 
-    async def list_rules(self, scope: Optional[RuleScope] = None) -> List[Rule]:
+    async def list_rules(self, scope: RuleScope | None = None) -> list[Rule]:
         if scope:
             scopes = [scope]
         else:

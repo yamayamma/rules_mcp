@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""
-MCP Server Testing Script
+"""MCP Server Testing Script
 
 This script tests the MCP server functionality by connecting to it
 and executing various MCP tools.
 """
 
+# ruff: noqa: E402
+
 import asyncio
-import json
 import sys
 from pathlib import Path
 
@@ -15,7 +15,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
-from rule_manager.models.base import RuleContext, RuleScope, RuleAction
+from rule_manager.models.base import RuleAction, RuleContext, RuleScope
 from rule_manager.models.settings import ServerSettings
 from rule_manager.server import RuleManagerServer
 
@@ -85,7 +85,7 @@ async def test_mcp_tools():
             final_action = eval_result.get("final_action")
             matched_count = eval_result.get("matched_rules_count", 0)
             total_time = eval_result.get("total_execution_time_ms", 0)
-            print(f"   ✅ Evaluation successful:")
+            print("   ✅ Evaluation successful:")
             print(f"   📊 Final action: {final_action}")
             print(f"   📊 Matched rules: {matched_count}")
             print(f"   ⏱️ Execution time: {total_time:.2f}ms")
@@ -170,7 +170,7 @@ async def test_mcp_tools():
                 f"   ⚠️ Rule deletion failed (may not exist): {delete_result['error']}"
             )
         else:
-            print(f"   ✅ Rule deleted successfully")
+            print("   ✅ Rule deleted successfully")
 
     except Exception as e:
         print(f"   ❌ Rule deletion failed: {e}")

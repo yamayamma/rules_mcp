@@ -1,27 +1,26 @@
 import time
-import asyncio
-from typing import List, Dict, Any, Optional, Set
 from datetime import datetime
+from typing import Any
+
 import semver
 
-from .dsl import DSLEvaluator
 from ..models.base import (
+    PriorityTieBreaking,
     Rule,
-    RuleSet,
-    RuleScope,
     RuleAction,
     RuleContext,
     RuleEvaluationResult,
     RuleEvaluationSummary,
-    PriorityTieBreaking,
+    RuleScope,
+    RuleSet,
 )
 from ..models.errors import (
     CircularInheritanceError,
-    PriorityConflictError,
     InvalidRulesetVersionError,
     UnexpectedError,
 )
 from ..storage.base import RuleStore
+from .dsl import DSLEvaluator
 
 
 class RuleEngine:
@@ -37,8 +36,8 @@ class RuleEngine:
         self.max_evaluation_time_ms = max_evaluation_time_ms
         self.engine_version = engine_version
         self.dsl_evaluator = DSLEvaluator()
-        self._rule_cache: Dict[RuleScope, RuleSet] = {}
-        self._inheritance_cache: Dict[str, Rule] = {}
+        self._rule_cache: dict[RuleScope, RuleSet] = {}
+        self._inheritance_cache: dict[str, Rule] = {}
 
     async def evaluate_rules(self, context: RuleContext) -> RuleEvaluationSummary:
         """
@@ -75,9 +74,9 @@ class RuleEngine:
             execution_time = (time.time() - start_time) * 1000
             raise UnexpectedError(
                 f"Rule evaluation failed after {execution_time:.2f}ms: {e}"
-            )
+            ) from e
 
-    async def _get_applicable_rules(self, context: RuleContext) -> List[Rule]:
+    async def _get_applicable_rules(self, context: RuleContext) -> list[Rule]:
         """
         Get all rules that should be evaluated for the given context.
         Rules are ordered by scope hierarchy and priority.
@@ -113,7 +112,7 @@ class RuleEngine:
             # Check if rule conditions match
             matched = True
             if rule.conditions:
-                for condition_name, condition_expr in rule.conditions.items():
+                for _condition_name, condition_expr in rule.conditions.items():
                     if isinstance(condition_expr, str):
                         condition_matched = self.dsl_evaluator.evaluate(
                             condition_expr, context
@@ -154,7 +153,7 @@ class RuleEngine:
             )
 
     def _evaluate_complex_condition(
-        self, condition: Dict[str, Any], context: RuleContext
+        self, condition: dict[str, Any], context: RuleContext
     ) -> bool:
         """
         Evaluate complex condition objects.
@@ -185,7 +184,7 @@ class RuleEngine:
         else:
             return bool(item)
 
-    async def _resolve_inheritance(self, rules: List[Rule]) -> List[Rule]:
+    async def _resolve_inheritance(self, rules: list[Rule]) -> list[Rule]:
         """
         Resolve rule inheritance and detect circular dependencies.
         """
@@ -204,7 +203,7 @@ class RuleEngine:
         return resolved_rules
 
     async def _resolve_rule_inheritance(
-        self, rule: Rule, rule_map: Dict[str, Rule], current_path: Set[str]
+        self, rule: Rule, rule_map: dict[str, Rule], current_path: set[str]
     ) -> Rule:
         """
         Resolve inheritance for a single rule.
@@ -263,7 +262,7 @@ class RuleEngine:
 
         return merged
 
-    def _sort_rules_by_priority(self, rules: List[Rule]) -> List[Rule]:
+    def _sort_rules_by_priority(self, rules: list[Rule]) -> list[Rule]:
         """
         Sort rules by priority and apply tie-breaking strategy.
         """
@@ -279,7 +278,7 @@ class RuleEngine:
         return sorted(rules, key=sort_key)
 
     def _determine_final_action(
-        self, results: List[RuleEvaluationResult]
+        self, results: list[RuleEvaluationResult]
     ) -> RuleAction:
         """
         Determine the final action based on rule evaluation results.

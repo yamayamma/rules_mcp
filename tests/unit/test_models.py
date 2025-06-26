@@ -1,16 +1,17 @@
-import pytest
 from datetime import datetime
+
+import pytest
 from pydantic import ValidationError
 
 from rule_manager.models.base import (
+    PriorityTieBreaking,
     Rule,
-    RuleSet,
-    RuleScope,
     RuleAction,
     RuleContext,
     RuleEvaluationResult,
     RuleEvaluationSummary,
-    PriorityTieBreaking,
+    RuleScope,
+    RuleSet,
 )
 
 
