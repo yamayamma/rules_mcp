@@ -1,5 +1,6 @@
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
+
 from ..models.base import RuleContext
 from ..models.errors import RuleDSLSyntaxError
 
@@ -47,7 +48,9 @@ class DSLEvaluator:
         try:
             return self._evaluate_expression(expression.strip(), context)
         except Exception as e:
-            raise RuleDSLSyntaxError(f"Failed to evaluate expression: {e}", expression)
+            raise RuleDSLSyntaxError(
+                f"Failed to evaluate expression: {e}", expression
+            ) from e
 
     def _evaluate_expression(self, expr: str, context: RuleContext) -> bool:
         # Handle logical operators
@@ -101,7 +104,7 @@ class DSLEvaluator:
 
         parts = expr.split(operator, 1)
         if len(parts) != 2:
-            raise RuleDSLSyntaxError(f"Invalid comparison expression", expr)
+            raise RuleDSLSyntaxError("Invalid comparison expression", expr)
 
         left = self._parse_value(parts[0].strip(), context)
         right = self._parse_value(parts[1].strip(), context)
@@ -109,7 +112,7 @@ class DSLEvaluator:
         try:
             return self.operators[operator](left, right)
         except Exception as e:
-            raise RuleDSLSyntaxError(f"Error in comparison: {e}", expr)
+            raise RuleDSLSyntaxError(f"Error in comparison: {e}", expr) from e
 
     def _parse_value(self, value: str, context: RuleContext) -> Any:
         value = value.strip()
@@ -174,7 +177,7 @@ class DSLEvaluator:
 
         return None
 
-    def validate_expression(self, expression: str) -> List[str]:
+    def validate_expression(self, expression: str) -> list[str]:
         """
         Validate an expression and return a list of issues found.
         Returns empty list if expression is valid.

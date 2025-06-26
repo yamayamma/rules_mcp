@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -29,15 +30,15 @@ class Rule(BaseModel):
     name: str
     scope: RuleScope
     priority: int = Field(ge=0, le=100, default=50)
-    conditions: Dict[str, Any] = Field(default_factory=dict)
+    conditions: dict[str, Any] = Field(default_factory=dict)
     action: RuleAction
-    parameters: Dict[str, Any] = Field(default_factory=dict)
-    parent_rule: Optional[str] = None
-    inherits_from: Optional[List[str]] = None
-    description: Optional[str] = None
+    parameters: dict[str, Any] = Field(default_factory=dict)
+    parent_rule: str | None = None
+    inherits_from: list[str] | None = None
+    description: str | None = None
     enabled: bool = True
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: str | None = None
+    updated_at: str | None = None
 
 
 class RuleSet(BaseModel):
@@ -46,20 +47,20 @@ class RuleSet(BaseModel):
     ruleset_version: str = "1.1"
     engine_min_version: str = ">=2.8.0"
     scope: RuleScope
-    rules: List[Rule] = Field(default_factory=list)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    rules: list[Rule] = Field(default_factory=list)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class RuleContext(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    user_id: Optional[str] = None
-    project_id: Optional[str] = None
-    session_id: Optional[str] = None
-    model_name: Optional[str] = None
-    prompt_length: Optional[int] = None
-    timestamp: Optional[str] = None
-    custom_attributes: Dict[str, Any] = Field(default_factory=dict)
+    user_id: str | None = None
+    project_id: str | None = None
+    session_id: str | None = None
+    model_name: str | None = None
+    prompt_length: int | None = None
+    timestamp: str | None = None
+    custom_attributes: dict[str, Any] = Field(default_factory=dict)
 
 
 class RuleEvaluationResult(BaseModel):
@@ -68,17 +69,17 @@ class RuleEvaluationResult(BaseModel):
     rule_name: str
     action: RuleAction
     matched: bool
-    parameters: Dict[str, Any] = Field(default_factory=dict)
-    message: Optional[str] = None
+    parameters: dict[str, Any] = Field(default_factory=dict)
+    message: str | None = None
     priority: int
-    execution_time_ms: Optional[float] = None
+    execution_time_ms: float | None = None
 
 
 class RuleEvaluationSummary(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     context: RuleContext
-    results: List[RuleEvaluationResult]
+    results: list[RuleEvaluationResult]
     final_action: RuleAction
     total_execution_time_ms: float
     evaluated_at: str

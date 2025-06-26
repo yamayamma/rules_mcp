@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import asyncio
 import sys
 from pathlib import Path
 
@@ -123,7 +122,6 @@ def load_settings_from_args(args: argparse.Namespace) -> ServerSettings:
     # Handle environment file
     if args.env_file:
         # Override the default env_file in model_config
-        import os
 
         if Path(args.env_file).exists():
             settings_kwargs["_env_file"] = args.env_file
@@ -138,21 +136,21 @@ def main():
     """Main entry point"""
     parser = create_parser()
     args = parser.parse_args()
-    
+
     try:
         # Load settings
         settings = load_settings_from_args(args)
-        
+
         # Create server
         server = RuleManagerServer(settings)
-        
-        print(f"Starting Rule Manager MCP Server...")
+
+        print("Starting Rule Manager MCP Server...")
         print(f"Transport: {settings.transport}")
         if settings.transport != "stdio":
             print(f"Address: {settings.host}:{settings.port}")
         print(f"Rules Directory: {settings.rules_dir}")
         print(f"Storage Backend: {settings.storage_backend}")
-        
+
         # Let FastMCP handle the event loop
         if settings.transport == "stdio":
             server.mcp.run(transport="stdio")
@@ -171,7 +169,7 @@ def main():
             )
         else:
             raise ValueError(f"Unsupported transport: {settings.transport}")
-            
+
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
     except Exception as e:

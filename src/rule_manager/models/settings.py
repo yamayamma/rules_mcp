@@ -1,6 +1,6 @@
 import os
-from typing import Literal, Optional
-from pydantic import Field
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .base import PriorityTieBreaking
@@ -33,7 +33,7 @@ class ServerSettings(BaseSettings):
 
     # Security settings
     enable_auth: bool = False
-    jwt_secret_key: Optional[str] = None
+    jwt_secret_key: str | None = None
     jwt_algorithm: str = "HS256"
     jwt_expiration_hours: int = 24
 
@@ -70,7 +70,7 @@ class CLISettings(BaseSettings):
         extra="ignore",
     )
 
-    config_file: Optional[str] = None
-    env_file: Optional[str] = None
+    config_file: str | None = None
+    env_file: str | None = None
     verbose: bool = False
     debug: bool = False

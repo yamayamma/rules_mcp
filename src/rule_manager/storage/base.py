@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
-from ..models.base import Rule, RuleSet, RuleScope
+from ..models.base import Rule, RuleScope, RuleSet
 
 
 class RuleStore(ABC):
@@ -15,8 +14,8 @@ class RuleStore(ABC):
 
     @abstractmethod
     async def get_rule(
-        self, rule_name: str, scope: Optional[RuleScope] = None
-    ) -> Optional[Rule]:
+        self, rule_name: str, scope: RuleScope | None = None
+    ) -> Rule | None:
         pass
 
     @abstractmethod
@@ -32,7 +31,7 @@ class RuleStore(ABC):
         pass
 
     @abstractmethod
-    async def list_rules(self, scope: Optional[RuleScope] = None) -> List[Rule]:
+    async def list_rules(self, scope: RuleScope | None = None) -> list[Rule]:
         pass
 
     @abstractmethod

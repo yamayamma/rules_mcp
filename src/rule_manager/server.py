@@ -1,23 +1,18 @@
-import asyncio
-import json
-from typing import Any, Dict, List, Optional
 from datetime import datetime
+from typing import Any
 
 from fastmcp import FastMCP
 from pydantic import BaseModel
 
+from .core.engine import RuleEngine
 from .models.base import (
     Rule,
-    RuleSet,
-    RuleScope,
     RuleAction,
     RuleContext,
-    RuleEvaluationSummary,
-    PriorityTieBreaking,
+    RuleScope,
 )
-from .models.settings import ServerSettings
 from .models.errors import RuleManagerError
-from .core.engine import RuleEngine
+from .models.settings import ServerSettings
 from .storage.yaml_store import YAMLRuleStore
 
 
@@ -25,26 +20,26 @@ class CreateRuleRequest(BaseModel):
     name: str
     scope: RuleScope
     priority: int = 50
-    conditions: Dict[str, Any] = {}
+    conditions: dict[str, Any] = {}
     action: RuleAction
-    parameters: Dict[str, Any] = {}
-    parent_rule: Optional[str] = None
-    inherits_from: Optional[List[str]] = None
-    description: Optional[str] = None
+    parameters: dict[str, Any] = {}
+    parent_rule: str | None = None
+    inherits_from: list[str] | None = None
+    description: str | None = None
     enabled: bool = True
 
 
 class UpdateRuleRequest(BaseModel):
     name: str
     scope: RuleScope
-    priority: Optional[int] = None
-    conditions: Optional[Dict[str, Any]] = None
-    action: Optional[RuleAction] = None
-    parameters: Optional[Dict[str, Any]] = None
-    parent_rule: Optional[str] = None
-    inherits_from: Optional[List[str]] = None
-    description: Optional[str] = None
-    enabled: Optional[bool] = None
+    priority: int | None = None
+    conditions: dict[str, Any] | None = None
+    action: RuleAction | None = None
+    parameters: dict[str, Any] | None = None
+    parent_rule: str | None = None
+    inherits_from: list[str] | None = None
+    description: str | None = None
+    enabled: bool | None = None
 
 
 class EvaluateRulesRequest(BaseModel):
@@ -78,7 +73,7 @@ class RuleManagerServer:
         """Register all MCP tools"""
 
         @self.mcp.tool()
-        async def evaluate_rules(request: EvaluateRulesRequest) -> Dict[str, Any]:
+        async def evaluate_rules(request: EvaluateRulesRequest) -> dict[str, Any]:
             """
             Evaluate rules against a given context and return the results.
 
@@ -109,7 +104,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def create_rule(request: CreateRuleRequest) -> Dict[str, Any]:
+        async def create_rule(request: CreateRuleRequest) -> dict[str, Any]:
             """
             Create a new rule.
 
@@ -154,7 +149,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def update_rule(request: UpdateRuleRequest) -> Dict[str, Any]:
+        async def update_rule(request: UpdateRuleRequest) -> dict[str, Any]:
             """
             Update an existing rule.
 
@@ -209,7 +204,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def delete_rule(rule_name: str, scope: str) -> Dict[str, Any]:
+        async def delete_rule(rule_name: str, scope: str) -> dict[str, Any]:
             """
             Delete a rule.
 
@@ -252,7 +247,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def list_rules(scope: Optional[str] = None) -> Dict[str, Any]:
+        async def list_rules(scope: str | None = None) -> dict[str, Any]:
             """
             List all rules, optionally filtered by scope.
 
@@ -290,8 +285,8 @@ class RuleManagerServer:
 
         @self.mcp.tool()
         async def get_rule(
-            rule_name: str, scope: Optional[str] = None
-        ) -> Dict[str, Any]:
+            rule_name: str, scope: str | None = None
+        ) -> dict[str, Any]:
             """
             Get a specific rule by name and optional scope.
 
@@ -334,7 +329,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def validate_rule_dsl(expression: str) -> Dict[str, Any]:
+        async def validate_rule_dsl(expression: str) -> dict[str, Any]:
             """
             Validate a rule DSL expression.
 
@@ -358,7 +353,7 @@ class RuleManagerServer:
                 }
 
         @self.mcp.tool()
-        async def health_check() -> Dict[str, Any]:
+        async def health_check() -> dict[str, Any]:
             """
             Perform a health check of the rule manager service.
 

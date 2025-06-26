@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""
-Debug MCP Server
+"""Debug MCP Server
 
 Debug the FastMCP tool registration process.
 """
+
+# ruff: noqa: E402
 
 import asyncio
 import sys
@@ -14,6 +15,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 from fastmcp import FastMCP
+
 from rule_manager.models.settings import ServerSettings
 from rule_manager.server import RuleManagerServer
 
@@ -111,9 +113,9 @@ async def debug_fastmcp_registration():
                         break
 
                 if health_tool:
-                    print(f"   🔧 Testing health_check tool...")
+                    print("   🔧 Testing health_check tool...")
                     # We can't call it directly here, but we know it exists
-                    print(f"   ✅ health_check tool found and ready")
+                    print("   ✅ health_check tool found and ready")
 
         except Exception as e:
             print(f"   ❌ Tool call test failed: {e}")

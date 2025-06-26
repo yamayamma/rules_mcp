@@ -1,11 +1,12 @@
-import pytest
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
 
+import pytest
+
+from rule_manager.models.base import Rule, RuleAction, RuleScope, RuleSet
+from rule_manager.models.errors import RuleNotFoundError, UnexpectedError
 from rule_manager.storage.yaml_store import YAMLRuleStore
-from rule_manager.models.base import Rule, RuleSet, RuleScope, RuleAction
-from rule_manager.models.errors import RuleNotFoundError
 
 
 class TestYAMLRuleStore:
@@ -102,7 +103,7 @@ class TestYAMLRuleStore:
         await self.store.add_rule(rule)
 
         # Add same rule again - should fail
-        with pytest.raises(Exception):  # Should raise an error for duplicate
+        with pytest.raises(UnexpectedError):
             await self.store.add_rule(rule)
 
     async def test_update_rule(self):

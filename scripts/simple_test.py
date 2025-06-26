@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""
-Simple MCP Server Test
+"""Simple MCP Server Test
 
 Test the MCP server by directly calling the tools without going through
 the MCP protocol.
 """
+
+# ruff: noqa: E402
 
 import asyncio
 import sys
@@ -14,9 +15,9 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
-from rule_manager.models.base import RuleContext, RuleScope, RuleAction
-from rule_manager.models.settings import ServerSettings
 from rule_manager.core.engine import RuleEngine
+from rule_manager.models.base import RuleAction, RuleContext, RuleScope
+from rule_manager.models.settings import ServerSettings
 from rule_manager.storage.yaml_store import YAMLRuleStore
 
 
@@ -83,7 +84,7 @@ async def test_rule_engine_directly():
 
         result = await engine.evaluate_rules(test_context)
 
-        print(f"   ✅ Evaluation successful:")
+        print("   ✅ Evaluation successful:")
         print(f"   📊 Final action: {result.final_action}")
         print(
             f"   📊 Matched rules: {result.matched_rules_count}/{result.applicable_rules_count}"

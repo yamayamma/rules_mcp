@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""
-Test Working MCP Server
+"""Test Working MCP Server
 
 Test the rule manager MCP server using the correct FastMCP API.
 """
+
+# ruff: noqa: E402
 
 import asyncio
 import sys
@@ -13,7 +14,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
-from rule_manager.models.base import RuleContext, RuleScope, RuleAction
+from rule_manager.models.base import RuleContext
 from rule_manager.models.settings import ServerSettings
 from rule_manager.server import RuleManagerServer
 
@@ -91,7 +92,7 @@ async def test_server_tools():
             request = EvaluateRulesRequest(context=test_context)
             result = await eval_tool.function(request)
 
-            print(f"   ✅ Evaluation result:")
+            print("   ✅ Evaluation result:")
             print(f"      📊 Final action: {result.get('final_action')}")
             print(f"      📊 Matched rules: {result.get('matched_rules_count')}")
             print(f"      ⏱️ Time: {result.get('total_execution_time_ms'):.2f}ms")
@@ -154,7 +155,7 @@ async def test_mcp_server_startup():
 
     server = RuleManagerServer(settings)
 
-    print(f"   ✅ Server initialized")
+    print("   ✅ Server initialized")
     print(f"   📋 Transport: {settings.transport}")
     print(f"   📋 Rules dir: {settings.rules_dir}")
     print(f"   📋 Storage: {settings.storage_backend}")
